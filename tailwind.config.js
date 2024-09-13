@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'sm' : { 'max' : '640px', 'min' : '200px'}
+      },
       fontFamily: {
         'roboto-condensed': ['"Roboto Condensed"', 'sans-serif'],
         'cambo': ['"Cambo"', 'serif'],
