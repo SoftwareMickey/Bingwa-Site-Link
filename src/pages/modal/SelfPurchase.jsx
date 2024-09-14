@@ -38,7 +38,7 @@ export default function SelfPurchase(){
         setUserChoice(e.target.value)
         
         if(e.target.value === 'other'){
-            setDynamicHeight(60)
+            setDynamicHeight(70)
         }else{
             setDynamicHeight(25)
         }
