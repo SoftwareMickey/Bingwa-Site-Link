@@ -47,7 +47,7 @@ export default function Bundles(){
     />)
 
     return <section className="mx-20 mt-10 sm:mx-4">
-        <p className="font-bold font-poppins">Bundles</p>
+        <p className="font-[400] font-poppins text-[32px]">Bundles</p>
 
         <div className="pt-4 flex justify-between flex-wrap sm:flex-col">{bundlesItem}</div>
     </section>

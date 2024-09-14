@@ -42,7 +42,7 @@ export default function Sms(){
     />)
 
     return <section className="mx-20 mt-10 sm:mx-4">
-        <p className="font-bold font-poppins">Sms</p>
+        <p className="font-[400] font-poppins text-[32px]">Sms</p>
 
         <div className="pt-4 flex justify-between flex-wrap sm:flex-col">{smsItem}</div>
     </section>

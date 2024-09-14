@@ -10,13 +10,13 @@ export default function SmsItem({title, price}){
         dispatch(modalActions.openModalHandler())
     }
 
-    return <div className="bg-slate-200  p-6 w-[30%] rounded mb-6 sm:w-full">
+    return <div className="bg-[#E2E2E9]  p-6 w-[30%] rounded-[8px] mb-6 sm:w-full">
         <div className="flex justify-between">
-            <p className="text-[13px]">{title}</p>
+            <p className="text-[16px]">{title}</p>
             <p className="font-bold">KES{price}</p>
         </div>
         <div className="mt-6 flex justify-center">
-            <button className="px-4 py-1 rounded-full border border-slate-400 text-[13px]" onClick={purchaseHandler}>Purchase</button>
+            <button className="px-4 py-1 rounded-[100px] border border-[#74777F] text-[13px] text-[#425E91]" onClick={purchaseHandler}>Purchase</button>
         </div>
     </div>
 }
