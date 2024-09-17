@@ -31,6 +31,9 @@ export default function SelfPurchase(){
     const [isError, setIsError] = useState(false)
     const [otherNumberError, setOtherNumberError] = useState(false)
 
+    const [isFocused, setIsFocused] = useState(false)
+    const [isOtherFocused, setIsOtherFocused] = useState(false)
+
 
     // * ------------------------------------ FUNCTION HANDLERS ---------------------------------------    * //
 
@@ -167,6 +170,23 @@ export default function SelfPurchase(){
         }
     }
 
+    // * Change border color by focussing
+    function changeBorderColor(){
+        setIsFocused(true)
+    }
+
+    function removeFocus(){
+        setIsFocused(false)
+    }
+
+    function changeOtherBorderColor(){
+        setIsOtherFocused(true)
+    }
+
+    function removeOtherFocus(){
+        setIsOtherFocused(false)
+    }
+
 
     // * -------------------------------------------  REACT FORM --------------------------------------------- * //
 
@@ -211,7 +231,9 @@ export default function SelfPurchase(){
                 value={otherNumber}
                 onChange={otherNumberHandler}
                 type="text"
-                className="bg-white px-4 py-[8px] rounded w-full mt-4 text-[#1E1E1E] text-[16px] font-[400] border border-[#D9D9D9]"
+                onFocus={changeOtherBorderColor}
+                onBlur={removeOtherFocus}
+                className={`bg-white px-4 py-[8px] rounded w-full mt-4 text-[#1E1E1E] text-[16px] font-[400] border border-[#D9D9D9] ${isOtherFocused? 'outline-none border-[#425E91]' : ''}`}
                 placeholder={`${userChoice === 'self'? 'M-Pesa Number' : 'Phone Number'}`}
             />
             {userChoice === 'other' && otherNumberError && <p className="font-semibold text-[12px] text-red-600 mt-4">Provide a valid safaricom number</p>}
@@ -232,7 +254,9 @@ export default function SelfPurchase(){
                     value={myNumber}
                     onChange={myNumberHandler}
                     type="text"
-                    className="bg-white px-4 py-[8px] rounded w-full mt-4 text-[#1E1E1E] text-[16px] font-[400] border border-[#D9D9D9]"
+                    onFocus={changeBorderColor}
+                    onBlur={removeFocus}
+                    className={`bg-white px-4 py-[8px] rounded w-full mt-4 text-[#1E1E1E] text-[16px] font-[400] border border-[#D9D9D9] ${isFocused? 'outline-none border-[#425E91]' : ''}`}
                     placeholder="M-Pesa Number"
                 />
             </div>

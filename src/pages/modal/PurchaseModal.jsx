@@ -11,7 +11,7 @@ export default function PurchaseModal(){
     }
 
     function Overlay(){
-        return <div className='fixed bg-[#EDEDF4] z-20 mt-14 w-[30%] left-[35%] py-6 px-4 ounded sm:w-[96%] sm:ml-2 sm:left-0'>
+        return <div className='fixed bg-[#EDEDF4] z-20 mt-14 rounded w-[30%] left-[35%] py-6 px-4 ounded sm:w-[96%] sm:ml-2 sm:left-0'>
             <SelfPurchase/>
         </div>
     }
