@@ -9,8 +9,8 @@ const route = createBrowserRouter([
     element: <RootLayout/>,
     errorElement: '',
     children: [
-      {index: true, path: ':id', element: <Home/>},
-      {path: ':id/purchase', element: <PurchaseModal/>}
+      {index: true, path: '/:id', element: <Home/>},
+      {path: '/:id/purchase', element: <PurchaseModal/>}
     ]
   }
 ])
