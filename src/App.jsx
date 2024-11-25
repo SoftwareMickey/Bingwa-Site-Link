@@ -5,12 +5,12 @@ import PurchaseModal from './pages/modal/PurchaseModal'
 
 const route = createBrowserRouter([
   {
-    path: ':id',
+    path: '',
     element: <RootLayout/>,
     errorElement: '',
     children: [
-      {index: true, path: '', element: <Home/>},
-      {path: 'purchase', element: <PurchaseModal/>}
+      {index: true, path: ':id', element: <Home/>},
+      {path: ':id/purchase', element: <PurchaseModal/>}
     ]
   }
 ])
