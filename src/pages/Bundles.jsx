@@ -1,54 +1,26 @@
 import BundleItem from "./resusables/BundleItem"
-
-const bundleOffers = [
-    {
-        id: Math.floor(Math.random() * 100000000),
-        title: '1.5GB for 3hrs',
-        price: 50
-    },
-    {
-        id: Math.floor(Math.random() * 100000000),
-        title: '350MB for 7 days',
-        price: 49
-    },
-    {
-        id: Math.floor(Math.random() * 100000000),
-        title: '250MB for 24hrs',
-        price: 20
-    },
-    {
-        id: Math.floor(Math.random() * 100000000),
-        title: '2.5GB for 7 days',
-        price: 300
-    },
-    {
-        id: Math.floor(Math.random() * 100000000),
-        title: '6GB for 7 days',
-        price: 700
-    },
-    {
-        id: Math.floor(Math.random() * 100000000),
-        title: '1GB for 1hr',
-        price: 19
-    },
-    {
-        id: Math.floor(Math.random() * 100000000),
-        title: '1.25GB until midnight',
-        price: 55
-    },
-]
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function Bundles(){
+    const offers = useSelector((state) => state.modal.data);
+    const [bundleOffers, setBundleOffers] = useState([])
+
+    useEffect(() => {
+        const bundles = offers.filter((data) => data.type === 'DATA')
+        setBundleOffers(bundles)
+    }, [offers])
+
 
     const bundlesItem = bundleOffers.map((bundle) => <BundleItem
-        key={bundle.id}
-        title={bundle.title}
+        key={bundle._id}
+        title={bundle.name}
         price={bundle.price}
     />)
 
-    return <section className="mx-20 mt-10 sm:mx-4">
+    return <section className="ml-20 mt-10 sm:mx-4">
         <p className="font-[400] font-poppins text-[32px]">Bundles</p>
 
-        <div className="pt-4 flex justify-between flex-wrap sm:flex-col">{bundlesItem}</div>
+        <div className="pt-4 flex flex-wrap sm:flex-col">{bundlesItem}</div>
     </section>
 }

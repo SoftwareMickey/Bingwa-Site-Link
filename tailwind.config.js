@@ -6,6 +6,38 @@ export default {
   ],
   theme: {
     extend: {
+      keyframes: {
+        'loading-dot': {
+          '0%, 20%': { opacity: 0 },
+          '40%': { opacity: 1 },
+          '100%': { opacity: 0 },
+        },
+        'zoomOut': {
+          "0%": { transform: "scale(0.8)", opacity: 0 },
+          "100%": { transform: "scale(1)", opacity: 1 },
+        },
+        'zoomIn': {
+          "0%": { transform: "scale(1)", opacity: 1 },
+          "100%": { transform: "scale(0.8)", opacity: 0 },
+        },
+        'slideInTop': {
+          "0%": {
+              transform: "translateY(-100%)",
+              opacity: "0",
+          },
+          "100%": {
+              transform: "translateY(0)",
+              opacity: "1",
+          },
+      },
+      },
+      animation: {
+        'slideInTop': "slideInTop 0.7s ease-out",
+        'zoomOut': "zoomOut 0.3s ease-out",
+        'zoomIn': "zoomIn 0.3s ease-in",
+        'loading-dot': 'loading-dot 1.5s infinite',
+        'pulse': "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      },
       screens: {
         'sm' : { 'max' : '640px', 'min' : '200px'}
       },

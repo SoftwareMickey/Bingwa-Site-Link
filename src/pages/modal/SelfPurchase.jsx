@@ -2,22 +2,24 @@ import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../../store";
-import { useNavigate } from "react-router";
+import { useParams } from "react-router";
+import LoadingDots from "./LoadingAnimate";
 
-export default function SelfPurchase(){
+export default function SelfPurchase({setSuccess}){
+
+    const params = useParams();
+    console.log(`Active params: ${params.id}`)
 
     // * Retrieve the amount for purchase that is being stored on redux state
     const amount = useSelector(state => state.modal.amount)
 
     const dispatch = useDispatch();
-    const navigator = useNavigate();
-
 
     // Todo --> ---------------------------- USESTATE HANDLERS ------------------------------------- <--   //
 
 
     const [userChoice, setUserChoice] = useState('self');
-    const [dynamicHeight, setDynamicHeight] = useState(25);
+    const [dynamicHeight, setDynamicHeight] = useState(35);
 
     const [myNumber, setMyNumber] = useState('')
     const [numberIsValid, setNumberIsValid] = useState(false)
@@ -33,6 +35,7 @@ export default function SelfPurchase(){
 
     const [isFocused, setIsFocused] = useState(false)
     const [isOtherFocused, setIsOtherFocused] = useState(false)
+    const [sendingPush, setIsSendingPush] = useState(false)
 
 
     // * ------------------------------------ FUNCTION HANDLERS ---------------------------------------    * //
@@ -49,7 +52,6 @@ export default function SelfPurchase(){
 
     function closeModalHandler(){
         dispatch(modalActions.closeModalHandler())
-        navigator('/')
     }
     
     function myNumberHandler(e){
@@ -57,7 +59,7 @@ export default function SelfPurchase(){
         if(e.target.value.trim().length > 9){
 
             // Todo : Regular expression to test whether the number starts with 07 or +254
-            const isValid = /^(07\d{0,8}|(\+254\d{0,9}))$/.test(e.target.value);
+            const isValid = /^(0[17]\d{0,8}|\+254\d{0,9})$/.test(e.target.value);
 
             if(isValid){
                 setNumberIsValid(true)
@@ -84,7 +86,8 @@ export default function SelfPurchase(){
         if(e.target.value.trim().length > 9){
         
             // Todo : Regular expression to test whether the number starts with 07 or +254
-            const isValid = /^(07\d{0,8}|(\+254\d{0,9}))$/.test(e.target.value);
+            const isValid = /^(0[17]\d{0,8}|\+254\d{0,9})$/.test(e.target.value);
+
 
             if(isValid){
                 setOtherNumberIsValid(true)
@@ -127,36 +130,60 @@ export default function SelfPurchase(){
         }
     }, [numberIsValid, userChoice, otherNumberIsValid, formIsValid])
 
+    // * implement stk push functionality
+    async function stkFunctionality(myNumber, amount){
+        setIsSendingPush(true)
+        const STK_URL = 'http://13.60.3.31:4500/stk';
 
-    // Todo: -> --------------------------- SUBMISSION TO BACKEND ----------------------------- // 
-
-    function purchaseSubmissionToDatabase(e){
-        e.preventDefault();
-
-        if(formIsValid && (userChoice === 'self')){
-            console.log(`Form is valid: ${formIsValid}`)
-            const data = {
-                'myNumber' : myNumber,
-                'amount' : amount
+        const response = await fetch(STK_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                "mpesa_number" : `${myNumber}`,
+                "amount" : amount,
+                "sitelinkID" : `${params.id}`
+            }),
+            headers: {
+                'Content-Type' : 'application/json'
             }
-            console.log(`Number to be sent to database: ${data.myNumber}`)
-            console.log(`Amount to be sent to database: ${data.amount}`)
+        })
+
+        if(response.ok){
+            setIsSendingPush(false)
+            const data = await response.json();
+            console.log(`Data: ${data}`)
 
             // Todo -> Clear input field
             setMyNumber('')
+            setSuccess(true)
             setIsError(false)
             setNumberIsValid(false)
+        }else{
+            setIsSendingPush(false)
+            console.log(`Response: ${await response.json().message}`)
+        }
+    }
 
-        }else if(formIsValid && (userChoice === 'other')){
-            const data = {
-                'amount': amount,
-                'myNumber' : myNumber,
-                'otherNumber': otherNumber
+    async function stkOtherNumberFunctionality(myNumber, amount, otherNumber){
+        setIsSendingPush(true)
+        const STK_URL = 'http://13.60.3.31:4500/stk';
+
+        const response = await fetch(STK_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                "mpesa_number" : `${myNumber}`,
+                "phone" : `${otherNumber}`,
+                "amount" : amount,
+                "sitelinkID" : `${params.id}`
+            }),
+            headers: {
+                'Content-Type' : 'application/json'
             }
+        })
 
-            console.log(`My Number to be sent to the database: ${data.myNumber}`)
-            console.log(`Other Number to be sent to the database: ${data.otherNumber}`)
-            console.log(`Amount to be sent to the database: ${data.amount}`)
+        if(response.ok){
+            setIsSendingPush(false)
+            const data = await response.json();
+            console.log(`Data: ${data}`)
 
             // Todo -> Clear all the field
             setMyNumber('')
@@ -164,6 +191,25 @@ export default function SelfPurchase(){
             setIsError(false)
             setNumberIsValid(false)
             setOtherNumberIsValid(false)
+            setSuccess(true)
+        }else{
+            setIsSendingPush(false)
+            console.log(`Response: ${await response.json().message}`)
+        }
+    }
+
+
+    // Todo: -> --------------------------- SUBMISSION TO BACKEND ----------------------------- // 
+
+    function purchaseSubmissionToDatabase(e){
+        e.preventDefault();
+
+        if(formIsValid && (userChoice === 'self')){
+               stkFunctionality(myNumber, amount)
+
+        }else if(formIsValid && (userChoice === 'other')){
+
+            stkOtherNumberFunctionality(myNumber, amount, otherNumber)
         }
         else{
             console.log('Form is not valid and purchase cannot be made...!')
@@ -190,7 +236,9 @@ export default function SelfPurchase(){
 
     // * -------------------------------------------  REACT FORM --------------------------------------------- * //
 
-    return <form className={`h-[${dynamicHeight}vh]`} onSubmit={purchaseSubmissionToDatabase}>
+    const isModalOpen = useSelector(state => state.modal.isModalOpen);
+
+    return <form className={`h-[${dynamicHeight}vh] ${isModalOpen? 'animate-zoomOut' : 'animate-zoomIn'} transition-all duration-300`} onSubmit={purchaseSubmissionToDatabase}>
         <div className="flex justify-end">
             <IoClose className="hover:cursor-pointer" onClick={closeModalHandler}/>
         </div>
@@ -223,7 +271,7 @@ export default function SelfPurchase(){
 
         { userChoice === 'other' && <div className="mt-8">
             <p className="font-[400] text-[16px] text-[#1E1E1E]">Number to receive offer</p>
-           <p className="text-[12px] text-[#757575] font-[400] mt-3">Make sure this is your M-Pesa number</p>
+           {/* <p className="text-[12px] text-[#757575] font-[400] mt-3">Make sure this is your M-Pesa number</p> */}
         </div>}
 
         {userChoice === 'other' && <div className="w-full">
@@ -234,7 +282,7 @@ export default function SelfPurchase(){
                 onFocus={changeOtherBorderColor}
                 onBlur={removeOtherFocus}
                 className={`bg-white px-4 py-[8px] rounded w-full mt-4 text-[#1E1E1E] text-[16px] font-[400] border border-[#D9D9D9] ${isOtherFocused? 'outline-none border-[#425E91]' : ''}`}
-                placeholder={`${userChoice === 'self'? 'M-Pesa Number' : 'Phone Number'}`}
+                placeholder={`${userChoice === 'self'? 'M-Pesa Number' : 'Number To Receive Offer'}`}
             />
             {userChoice === 'other' && otherNumberError && <p className="font-semibold text-[12px] text-red-600 mt-4">Provide a valid safaricom number</p>}
             {userChoice === 'other' && otherNumber.length  < 10 && otherNumber.length > 0 && <p className="text-[12px] mt-2">Number characters are less than 10</p>}
@@ -246,7 +294,7 @@ export default function SelfPurchase(){
             <div className="mt-8">
                 {userChoice === 'other' && <p className="font-[400] text-[16px] text-[#1E1E1E]">Number to make payment</p>}
                 {userChoice === 'self' && <p className="font-semibold text-[13px]">Number to receive offer</p>}
-                <p className="text-[12px] text-slate-500 mt-3">Make sure this is your M-Pesa number</p>
+                {/* <p className="text-[12px] text-slate-500 mt-3">Make sure this is your M-Pesa number</p> */}
             </div>
 
             <div className="w-full">
@@ -257,7 +305,7 @@ export default function SelfPurchase(){
                     onFocus={changeBorderColor}
                     onBlur={removeFocus}
                     className={`bg-white px-4 py-[8px] rounded w-full mt-4 text-[#1E1E1E] text-[16px] font-[400] border border-[#D9D9D9] ${isFocused? 'outline-none border-[#425E91]' : ''}`}
-                    placeholder="M-Pesa Number"
+                    placeholder={`${userChoice === 'self'? 'Number To Receive Offer' : 'M-PESA Number'}`}
                 />
             </div>
 
@@ -268,9 +316,22 @@ export default function SelfPurchase(){
             {userChoice === 'self' && isError && <p className="font-semibold text-[12px] text-red-600 mt-4">Provide a valid safaricom number</p>}
             {userChoice === 'other' && isError && <p className="font-semibold text-[12px] text-red-600 mt-4">Provide a valid safaricom number</p>}
         </>}
+
+        <div>{userChoice === 'self' && sendingPush && 
+            <div className="flex mt-4">
+                <p className="text-[14px] mr-[8px] text-slate-600">Purchasing please wait</p>
+                <LoadingDots/>
+            </div>
+        }</div>
+        <div>{userChoice === 'other' && sendingPush && 
+            <div className="flex mt-4">
+                <p className="text-[14px] mr-[8px] text-slate-600">Purchasing please wait</p>
+                <LoadingDots/>
+            </div>
+        }</div>
         
 
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-center mt-8">
             <button className="bg-[#425E91] text-white text-[13px] px-4 py-2 rounded-[100px] h-[40px] w-[161px]">Confirm Purchase</button>
         </div>
     </form>

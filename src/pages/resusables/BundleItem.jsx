@@ -1,17 +1,13 @@
 import { useDispatch } from "react-redux"
 import { modalActions } from "../../store";
-import { useNavigate } from "react-router";
 
 export default function BundleItem({title, price}){
 
     const dispatch = useDispatch();
-    const navigator = useNavigate();
 
     function purchaseHandler(){
         console.log(`Purchase process has kicked off...!`)
         dispatch(modalActions.openModalHandler())
-
-        navigator('purchase')
 
         dispatch(modalActions.addPurchaseHandler({
             'price' : price,
@@ -19,7 +15,7 @@ export default function BundleItem({title, price}){
         }))
     }
 
-    return <div className="bg-[#E2E2E9]  p-6 w-[30%] rounded-[8px] mb-8 sm:w-full">
+    return <div className="bg-[#E2E2E9]  p-6 w-[30%] rounded-[8px] mb-8 sm:w-full mr-10">
         <div className="flex justify-between">
             <p className="text-[16px] text-black font-[400]">{title}</p>
             <p className="text-[16px] font-[500]">KES {price}</p>

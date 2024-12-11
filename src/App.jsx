@@ -1,16 +1,14 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import RootLayout from './RootLayout'
 import Home from './pages/Home'
-import PurchaseModal from './pages/modal/PurchaseModal'
 
 const route = createBrowserRouter([
   {
-    path: '',
+    path: '/:id',
     element: <RootLayout/>,
     errorElement: '',
     children: [
-      {index: true, path: '/:id', element: <Home/>},
-      {path: '/:id/purchase', element: <PurchaseModal/>}
+      {index: true, path: '', element: <Home/>}
     ]
   }
 ])

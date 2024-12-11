@@ -8,9 +8,14 @@ export default function SmsItem({title, price}){
     function purchaseHandler(){
         console.log(`Purchase process has kicked off...!`)
         dispatch(modalActions.openModalHandler())
+
+        dispatch(modalActions.addPurchaseHandler({
+            'price' : price,
+            'phoneNumber': ''
+        }))
     }
 
-    return <div className="bg-[#E2E2E9]  p-6 w-[30%] rounded-[8px] mb-6 sm:w-full">
+    return <div className="bg-[#E2E2E9]  p-6 w-[30%] rounded-[8px] mb-6 sm:w-full mr-10">
         <div className="flex justify-between">
             <p className="text-[16px]">{title}</p>
             <p className="font-bold">KES{price}</p>
