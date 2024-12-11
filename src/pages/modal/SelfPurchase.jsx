@@ -133,7 +133,7 @@ export default function SelfPurchase({setSuccess}){
     // * implement stk push functionality
     async function stkFunctionality(myNumber, amount){
         setIsSendingPush(true)
-        const STK_URL = 'http://13.60.3.31:4500/stk';
+        const STK_URL = 'https://api.bingwahybrid.com/stk';
 
         const response = await fetch(STK_URL, {
             method: 'POST',
@@ -165,7 +165,7 @@ export default function SelfPurchase({setSuccess}){
 
     async function stkOtherNumberFunctionality(myNumber, amount, otherNumber){
         setIsSendingPush(true)
-        const STK_URL = 'http://13.60.3.31:4500/stk';
+        const STK_URL = 'https://api.bingwahybrid.com/stk';
 
         const response = await fetch(STK_URL, {
             method: 'POST',

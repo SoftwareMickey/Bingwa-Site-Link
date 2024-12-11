@@ -11,7 +11,7 @@ export default function Navigation(){
     const params = useParams();
 
     async function agentsOffersHandler(){
-        const AGENTS_URL =  `http://13.60.3.31:4500/sitelink/${params.id}`
+        const AGENTS_URL =  `https://api.bingwahybrid.com/sitelink/${params.id}`
 
         const response = await fetch(AGENTS_URL);
         if(response.ok){
